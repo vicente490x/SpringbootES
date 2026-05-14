@@ -1,12 +1,6 @@
 package its.springboot.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "studenti")
@@ -21,7 +15,7 @@ public class StudenteEntity {
     private int eta;
 
     @ManyToOne
-    @JoinColumn(name = "classe_id") 
+    @JoinColumn(name = "classe_id", nullable = false)
     private ClasseEntity classe;
 
     public StudenteEntity() {}

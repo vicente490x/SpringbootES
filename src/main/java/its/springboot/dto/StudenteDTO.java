@@ -6,10 +6,11 @@ public class StudenteDTO {
     private String nome;
     private String cognome;
     private int eta;
-    private Long classeId;
+
+    private Long classeId;     // ID della classe
+    private String classeNome; // "3B", "4A", ecc.
 
     public StudenteDTO() {}
-
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -25,4 +26,7 @@ public class StudenteDTO {
 
     public Long getClasseId() { return classeId; }
     public void setClasseId(Long classeId) { this.classeId = classeId; }
+
+    public String getClasseNome() { return classeNome; }
+    public void setClasseNome(String classeNome) { this.classeNome = classeNome; }
 }

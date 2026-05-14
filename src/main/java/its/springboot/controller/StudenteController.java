@@ -32,6 +32,7 @@ public class StudenteController {
         return service.getStudentiByClasse(classeId);
     }
 
+
     @PostMapping("/insert")
     public StudenteDTO insertStudente(@RequestBody StudenteDTO dto) {
         return service.insertStudente(dto);
@@ -47,10 +48,16 @@ public class StudenteController {
         return service.updateStudente(id, dto);
     }
 
+   
     @DeleteMapping("/delete/{id}")
-    public String deleteStudente(@PathVariable Long id) {
+public String deleteStudente(@PathVariable Long id) {
+    try {
         return service.deleteStudente(id)
-                ? "Studente eliminato"
-                : "Studente non trovato";
+                ? "Classe eliminata"
+                : "Classe non trovata";
+    } catch (RuntimeException e) {
+        return e.getMessage(); // 🔥 manda il messaggio al frontend
     }
+}
+
 }
