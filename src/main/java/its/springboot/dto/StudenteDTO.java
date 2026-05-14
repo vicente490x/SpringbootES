@@ -10,13 +10,6 @@ public class StudenteDTO {
 
     public StudenteDTO() {}
 
-    public StudenteDTO(Long id, String nome, String cognome, int eta, Long classeId) {
-        this.id = id;
-        this.nome = nome;
-        this.cognome = cognome;
-        this.eta = eta;
-        this.classeId = classeId;
-    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

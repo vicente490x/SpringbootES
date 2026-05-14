@@ -8,11 +8,6 @@ public class ClasseDTO {
 
     public ClasseDTO() {}
 
-    public ClasseDTO(Long id, String sezione, int numeroStudenti) {
-        this.id = id;
-        this.sezione = sezione;
-        this.numeroStudenti = numeroStudenti;
-    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

@@ -18,22 +18,34 @@ public class StudenteController {
     }
 
     @GetMapping("/lista")
-    public List<StudenteDTO> getStudenti() { return service.getStudenti();}
+    public List<StudenteDTO> getStudenti() {
+        return service.getStudenti();
+    }
 
     @GetMapping("/{id}")
-    public StudenteDTO getStudente(@PathVariable Long id) {return service.getStudente(id);}
+    public StudenteDTO getStudente(@PathVariable Long id) {
+        return service.getStudente(id);
+    }
 
     @GetMapping("/classe/{classeId}")
-    public List<StudenteDTO> getStudentiByClasse(@PathVariable Long classeId) {return service.getStudentiByClasse(classeId);}
+    public List<StudenteDTO> getStudentiByClasse(@PathVariable Long classeId) {
+        return service.getStudentiByClasse(classeId);
+    }
 
     @PostMapping("/insert")
-    public StudenteDTO insertStudente(@RequestBody StudenteDTO dto) { return service.insertStudente(dto);}
+    public StudenteDTO insertStudente(@RequestBody StudenteDTO dto) {
+        return service.insertStudente(dto);
+    }
 
     @PostMapping("/insertMultiple")
-    public List<StudenteDTO> insertMultiple(@RequestBody List<StudenteDTO> dtos) {return service.insertListStudenti(dtos); }
+    public List<StudenteDTO> insertMultiple(@RequestBody List<StudenteDTO> dtos) {
+        return service.insertListStudenti(dtos);
+    }
 
     @PutMapping("/update/{id}")
-    public StudenteDTO updateStudente(@PathVariable Long id, @RequestBody StudenteDTO dto) {return service.updateStudente(id, dto); }
+    public StudenteDTO updateStudente(@PathVariable Long id, @RequestBody StudenteDTO dto) {
+        return service.updateStudente(id, dto);
+    }
 
     @DeleteMapping("/delete/{id}")
     public String deleteStudente(@PathVariable Long id) {

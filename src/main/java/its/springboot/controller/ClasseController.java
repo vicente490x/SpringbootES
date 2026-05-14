@@ -23,16 +23,19 @@ public class ClasseController {
     }
 
     @GetMapping("/{id}")
-    public ClasseDTO getClasse(@PathVariable Long id) {return service.getClasse(id);}
+    public ClasseDTO getClasse(@PathVariable Long id) {
+        return service.getClasse(id);
+    }
 
     @PostMapping("/insert")
-    public ClasseDTO insertClasse(@RequestBody ClasseDTO dto) { return service.insertClasse(dto);}
-
-    @PostMapping("/insertMultiple")
-    public List<ClasseDTO> insertMultiple(@RequestBody List<ClasseDTO> dtos) { return service.insertListClasse(dtos);}
+    public ClasseDTO insertClasse(@RequestBody ClasseDTO dto) {
+        return service.insertClasse(dto);
+    }
 
     @PutMapping("/update/{id}")
-    public ClasseDTO updateClasse(@PathVariable Long id, @RequestBody ClasseDTO dto) { return service.updateClasse(id, dto);}
+    public ClasseDTO updateClasse(@PathVariable Long id, @RequestBody ClasseDTO dto) {
+        return service.updateClasse(id, dto);
+    }
 
     @DeleteMapping("/delete/{id}")
     public String deleteClasse(@PathVariable Long id) {
