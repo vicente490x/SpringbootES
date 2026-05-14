@@ -1,0 +1,38 @@
+body.light {
+    background: #f4f4f4;
+    color: #222;
+}
+
+body.dark {
+    background: #121212;
+    color: #eee;
+}
+
+body.dark .card {
+    background: #1e1e1e;
+    color: #eee;
+}
+
+body.dark .table {
+    color: #eee;
+}
+
+.card {
+    border-radius: 12px;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+}
+
+button {
+    transition: 0.2s;
+}
+
+button:hover {
+    transform: scale(1.03);
+}
+
+.navbar {
+    border-radius: 0 0 10px 10px;
+}

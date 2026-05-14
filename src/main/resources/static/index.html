@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestione Scuola</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="light">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+  <div class="container-fluid">
+    <span class="navbar-brand">Gestione Scuola</span>
+    <button class="btn btn-outline-light btn-sm" onclick="toggleDarkMode()">Dark / Light</button>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- DASHBOARD -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Dashboard</h5>
+      <p class="card-text">
+        Numero totale studenti: <span id="totStudenti">0</span><br>
+        Numero totale classi: <span id="totClassi">0</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- CLASSI -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <h4>Classi</h4>
+
+      <div class="row g-2 mb-3">
+        <div class="col-md-4">
+          <input id="sezione" class="form-control" placeholder="Sezione (es: 3B)">
+        </div>
+        <div class="col-md-4">
+          <input id="numeroStudenti" type="number" class="form-control" placeholder="Numero studenti">
+        </div>
+        <div class="col-md-4">
+          <button class="btn btn-success w-100" onclick="addClasse()">Aggiungi Classe</button>
+        </div>
+      </div>
+
+      <table class="table table-striped" id="tabellaClassi">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Sezione</th>
+            <th>Numero Studenti</th>
+            <th>Azioni</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- STUDENTI -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <h4>Studenti</h4>
+
+      <div class="row g-2 mb-3">
+        <div class="col-md-3">
+          <input id="nome" class="form-control" placeholder="Nome">
+        </div>
+        <div class="col-md-3">
+          <input id="cognome" class="form-control" placeholder="Cognome">
+        </div>
+        <div class="col-md-2">
+          <input id="eta" type="number" class="form-control" placeholder="Età">
+        </div>
+        <div class="col-md-2">
+          <select id="classeSelect" class="form-select"></select>
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-success w-100" onclick="addStudente()">Aggiungi Studente</button>
+        </div>
+      </div>
+
+      <div class="row g-2 mb-3">
+        <div class="col-md-4">
+          <select id="filtroClasse" class="form-select" onchange="loadStudenti()">
+            <option value="">Tutte le classi</option>
+          </select>
+        </div>
+      </div>
+
+      <table class="table table-striped" id="tabellaStudenti">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Cognome</th>
+            <th>Età</th>
+            <th>Classe</th>
+            <th>Azioni</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL EDIT STUDENTE -->
+<div class="modal fade" id="editStudenteModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modifica Studente</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editStudenteId">
+        <div class="mb-2">
+          <input id="editNome" class="form-control" placeholder="Nome">
+        </div>
+        <div class="mb-2">
+          <input id="editCognome" class="form-control" placeholder="Cognome">
+        </div>
+        <div class="mb-2">
+          <input id="editEta" type="number" class="form-control" placeholder="Età">
+        </div>
+        <div class="mb-2">
+          <select id="editClasseSelect" class="form-select"></select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+        <button class="btn btn-primary" onclick="salvaStudenteEdit()">Salva</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
