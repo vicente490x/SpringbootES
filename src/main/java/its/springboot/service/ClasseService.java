@@ -86,7 +86,5 @@ public class ClasseService {
         return null;
     }
 
-    public boolean deleteClasse(Long id) {
-        return classi.removeIf(c -> c.getId().equals(id));
-    }
+    public boolean deleteClasse(Long id) { return classi.removeIf(c -> c.getId().equals(id)); }
 }

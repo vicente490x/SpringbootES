@@ -14,7 +14,6 @@ public class StudenteService {
     private List<Studente> studenti = new ArrayList<>();
     private Long nextId = 1L;
 
-    // ENTITY → DTO
     private StudenteDTO toDTO(Studente s) {
         return new StudenteDTO(
             s.getId(),
@@ -25,7 +24,6 @@ public class StudenteService {
         );
     }
 
-    // DTO → ENTITY
     private Studente toEntity(StudenteDTO dto) {
         Studente s = new Studente(
             dto.getNome(),
@@ -37,14 +35,12 @@ public class StudenteService {
         return s;
     }
 
-    // GET tutti
     public List<StudenteDTO> getStudenti() {
         List<StudenteDTO> result = new ArrayList<>();
         for (Studente s : studenti) result.add(toDTO(s));
         return result;
     }
 
-    // GET per ID
     public StudenteDTO getStudente(Long id) {
         for (Studente s : studenti)
             if (s.getId().equals(id))
@@ -52,7 +48,6 @@ public class StudenteService {
         return null;
     }
 
-    // INSERT singolo
     public StudenteDTO insertStudente(StudenteDTO dto) {
         Studente s = toEntity(dto);
         s.setId(nextId++);
@@ -60,7 +55,6 @@ public class StudenteService {
         return toDTO(s);
     }
 
-    // INSERT multiplo
     public List<StudenteDTO> insertListStudenti(List<StudenteDTO> dtos) {
         List<StudenteDTO> result = new ArrayList<>();
         for (StudenteDTO dto : dtos)
@@ -68,7 +62,6 @@ public class StudenteService {
         return result;
     }
 
-    // GET studenti per classe
     public List<StudenteDTO> getStudentiByClasse(Long classeId) {
         List<StudenteDTO> result = new ArrayList<>();
         for (Studente s : studenti)
@@ -77,7 +70,6 @@ public class StudenteService {
         return result;
     }
 
-    // UPDATE
     public StudenteDTO updateStudente(Long id, StudenteDTO dto) {
         for (Studente s : studenti) {
             if (s.getId().equals(id)) {
@@ -91,8 +83,5 @@ public class StudenteService {
         return null;
     }
 
-    // DELETE
-    public boolean deleteStudente(Long id) {
-        return studenti.removeIf(s -> s.getId().equals(id));
-    }
+    public boolean deleteStudente(Long id) { return studenti.removeIf(s -> s.getId().equals(id));}
 }

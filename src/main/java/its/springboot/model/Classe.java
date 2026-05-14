@@ -9,23 +9,16 @@ public class Classe {
 		setSezione(sezione);
 		setNumeroStudenti(numeroStudenti);
 	}
-	public String getSezione() {
-		return sezione;
-	}
-	public void setSezione(String sezione) {
-		this.sezione = sezione;
-	}
-	public int getNumeroStudenti() {
-		return numeroStudenti;
-	}
-	public void setNumeroStudenti(int numeroStudenti) {
-		this.numeroStudenti = numeroStudenti;
-	}
+	public String getSezione() {return sezione;}
 	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-		}
+	public void setSezione(String sezione) {this.sezione = sezione;}
+	
+	public int getNumeroStudenti() {return numeroStudenti;}
+	
+	public void setNumeroStudenti(int numeroStudenti) {this.numeroStudenti = numeroStudenti;}
+	
+	public Long getId() {return id;}
+	
+	
+	public void setId(Long id) { this.id = id;}
 }
