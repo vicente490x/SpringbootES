@@ -4,52 +4,48 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
 
-import its.springboot.model.Classe;
-import its.springboot.service.ClasseService;
 import its.springboot.dto.ClasseDTO;
-
+import its.springboot.service.ClasseService;
 
 @RestController
 @RequestMapping("/classe")
 public class ClasseController {
 
-    private final ClasseService classeService;
+    private final ClasseService service;
 
-    public ClasseController(ClasseService classeService) {
-        this.classeService = classeService;
+    public ClasseController(ClasseService service) {
+        this.service = service;
     }
 
-    // GET
-    @GetMapping("/lista")	
+    @GetMapping("/lista")
     public List<ClasseDTO> getClassi() {
-		return classeService.getClassi();
-	}
-    
-	@GetMapping("/{id}")
-	public Classe getClasse(@PathVariable Long id) {
-		return classeService.getClasse(id);
-	}
-	
-	// POST
-	@PostMapping("/insert")
-	public ClasseDTO insertClasse(@RequestBody ClasseDTO dto) {
-		return classeService.insertClasse(dto);
-	}
-	@PostMapping("/insertList")
-	public List<ClasseDTO> insertListClassi(@RequestBody List<ClasseDTO> dtos) {
-		return classeService.insertListClasse(dtos);
-	}
-	// PUT
-	@PutMapping("/update/{id}")
-	public ClasseDTO updateClasse(@PathVariable Long id, @RequestBody ClasseDTO dto) {
-		return classeService.updateClasse(id, dto);
-	}
-	
-	// DELETE
-	@DeleteMapping("/delete/{id}")
-	public String deleteClasse(@PathVariable Long id) {
-		return classeService.deleteClasse(id)
-				? "Classe eliminata"
-				: "Classe non trovata";
-	}
+        return service.getClassi();
+    }
+
+    @GetMapping("/{id}")
+    public ClasseDTO getClasse(@PathVariable Long id) {
+        return service.getClasse(id);
+    }
+
+    @PostMapping("/insert")
+    public ClasseDTO insertClasse(@RequestBody ClasseDTO dto) {
+        return service.insertClasse(dto);
+    }
+
+    @PostMapping("/insertMultiple")
+    public List<ClasseDTO> insertMultiple(@RequestBody List<ClasseDTO> dtos) {
+        return service.insertListClasse(dtos);
+    }
+
+    @PutMapping("/update/{id}")
+    public ClasseDTO updateClasse(@PathVariable Long id, @RequestBody ClasseDTO dto) {
+        return service.updateClasse(id, dto);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public String deleteClasse(@PathVariable Long id) {
+        return service.deleteClasse(id)
+                ? "Classe eliminata"
+                : "Classe non trovata";
+    }
 }

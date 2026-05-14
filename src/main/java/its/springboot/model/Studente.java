@@ -1,41 +1,34 @@
 package its.springboot.model;
 
 public class Studente {
-	private String nome;
-	private String cognome;
-	private String dataNascita;
-	
-	public Studente(String nome, String cognome, String dataNascita) {
-		setNome(nome);
-		setCognome(cognome);
-		setDataNascita(dataNascita);
-	}
 
-	public String getNome() {
-		return nome;
-	}
+    private Long id;
+    private String nome;
+    private String cognome;
+    private int eta;
+    private Long classeId; // relazione con Classe
 
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
+    public Studente() {}
 
-	public String getCognome() {
-		return cognome;
-	}
+    public Studente(String nome, String cognome, int eta, Long classeId) {
+        this.nome = nome;
+        this.cognome = cognome;
+        this.eta = eta;
+        this.classeId = classeId;
+    }
 
-	
-	public void setCognome(String cognome) {
-		this.cognome = cognome;
-	}
-	
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-	public String getDataNascita() {
-		return dataNascita;
-	}
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
 
-	public void setDataNascita(String dataNascita) {
-		this.dataNascita = dataNascita;
-	}
-	
-	
+    public String getCognome() { return cognome; }
+    public void setCognome(String cognome) { this.cognome = cognome; }
+
+    public int getEta() { return eta; }
+    public void setEta(int eta) { this.eta = eta; }
+
+    public Long getClasseId() { return classeId; }
+    public void setClasseId(Long classeId) { this.classeId = classeId; }
 }

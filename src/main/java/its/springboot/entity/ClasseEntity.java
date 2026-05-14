@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "classi")
 public class ClasseEntity {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,27 +24,12 @@ public class ClasseEntity {
         this.numeroStudenti = numeroStudenti;
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getSezione() { return sezione; }
+    public void setSezione(String sezione) { this.sezione = sezione; }
 
-    public String getSezione() {
-        return sezione;
-    }
-
-    public void setSezione(String sezione) {
-        this.sezione = sezione;
-    }
-
-    public int getNumeroStudenti() {
-        return numeroStudenti;
-    }
-
-    public void setNumeroStudenti(int numeroStudenti) {
-        this.numeroStudenti = numeroStudenti;
-    }
+    public int getNumeroStudenti() { return numeroStudenti; }
+    public void setNumeroStudenti(int numeroStudenti) { this.numeroStudenti = numeroStudenti; }
 }

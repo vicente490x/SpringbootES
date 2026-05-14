@@ -6,81 +6,93 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import its.springboot.dto.StudenteDTO;
-import its.springboot.entity.StudenteEntity;
-import its.springboot.repository.StudenteRepository;
+import its.springboot.model.Studente;
 
 @Service
 public class StudenteService {
 
-    private final StudenteRepository repo;
+    private List<Studente> studenti = new ArrayList<>();
+    private Long nextId = 1L;
 
-    public StudenteService(StudenteRepository repo) {
-        this.repo = repo;
+    // ENTITY → DTO
+    private StudenteDTO toDTO(Studente s) {
+        return new StudenteDTO(
+            s.getId(),
+            s.getNome(),
+            s.getCognome(),
+            s.getEta(),
+            s.getClasseId()
+        );
     }
 
-    //  Entity to DTO
-    private StudenteDTO convertToDTO(StudenteEntity entity) {
-        StudenteDTO dto = new StudenteDTO();
-        dto.setId(entity.getId());
-        dto.setNome(entity.getNome());
-        dto.setCognome(entity.getCognome());
-        dto.setEta(entity.getEta());
-        return dto;
-    }
-
-    //  DTO to Entity
-    private StudenteEntity convertToEntity(StudenteDTO dto) {
-        StudenteEntity entity = new StudenteEntity();
-        entity.setId(dto.getId());
-        entity.setNome(dto.getNome());
-        entity.setCognome(dto.getCognome());
-        entity.setEta(dto.getEta());
-        return entity;
+    // DTO → ENTITY
+    private Studente toEntity(StudenteDTO dto) {
+        Studente s = new Studente(
+            dto.getNome(),
+            dto.getCognome(),
+            dto.getEta(),
+            dto.getClasseId()
+        );
+        s.setId(dto.getId());
+        return s;
     }
 
     // GET tutti
     public List<StudenteDTO> getStudenti() {
-        List<StudenteEntity> entities = repo.findAll();
-        List<StudenteDTO> dtos = new ArrayList<>();
-
-        for (StudenteEntity e : entities) {
-            dtos.add(convertToDTO(e));
-        }
-
-        return dtos;
+        List<StudenteDTO> result = new ArrayList<>();
+        for (Studente s : studenti) result.add(toDTO(s));
+        return result;
     }
 
     // GET per ID
     public StudenteDTO getStudente(Long id) {
-        return repo.findById(id)
-                .map(this::convertToDTO)
-                .orElse(null);
+        for (Studente s : studenti)
+            if (s.getId().equals(id))
+                return toDTO(s);
+        return null;
     }
 
-    // INSERT
+    // INSERT singolo
     public StudenteDTO insertStudente(StudenteDTO dto) {
-        StudenteEntity entity = convertToEntity(dto);
-        StudenteEntity saved = repo.save(entity);
-        return convertToDTO(saved);
+        Studente s = toEntity(dto);
+        s.setId(nextId++);
+        studenti.add(s);
+        return toDTO(s);
+    }
+
+    // INSERT multiplo
+    public List<StudenteDTO> insertListStudenti(List<StudenteDTO> dtos) {
+        List<StudenteDTO> result = new ArrayList<>();
+        for (StudenteDTO dto : dtos)
+            result.add(insertStudente(dto));
+        return result;
+    }
+
+    // GET studenti per classe
+    public List<StudenteDTO> getStudentiByClasse(Long classeId) {
+        List<StudenteDTO> result = new ArrayList<>();
+        for (Studente s : studenti)
+            if (s.getClasseId().equals(classeId))
+                result.add(toDTO(s));
+        return result;
     }
 
     // UPDATE
     public StudenteDTO updateStudente(Long id, StudenteDTO dto) {
-        StudenteEntity entity = repo.findById(id).orElse(null);
-        if (entity == null) return null;
-
-        entity.setNome(dto.getNome());
-        entity.setCognome(dto.getCognome());
-        entity.setEta(dto.getEta());
-
-        StudenteEntity saved = repo.save(entity);
-        return convertToDTO(saved);
+        for (Studente s : studenti) {
+            if (s.getId().equals(id)) {
+                s.setNome(dto.getNome());
+                s.setCognome(dto.getCognome());
+                s.setEta(dto.getEta());
+                s.setClasseId(dto.getClasseId());
+                return toDTO(s);
+            }
+        }
+        return null;
     }
 
     // DELETE
     public boolean deleteStudente(Long id) {
-        if (!repo.existsById(id)) return false;
-        repo.deleteById(id);
-        return true;
+        return studenti.removeIf(s -> s.getId().equals(id));
     }
 }

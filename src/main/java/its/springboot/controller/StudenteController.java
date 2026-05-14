@@ -2,14 +2,7 @@ package its.springboot.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import its.springboot.dto.StudenteDTO;
 import its.springboot.service.StudenteService;
@@ -34,9 +27,19 @@ public class StudenteController {
         return service.getStudente(id);
     }
 
+    @GetMapping("/classe/{classeId}")
+    public List<StudenteDTO> getStudentiByClasse(@PathVariable Long classeId) {
+        return service.getStudentiByClasse(classeId);
+    }
+
     @PostMapping("/insert")
     public StudenteDTO insertStudente(@RequestBody StudenteDTO dto) {
         return service.insertStudente(dto);
+    }
+
+    @PostMapping("/insertMultiple")
+    public List<StudenteDTO> insertMultiple(@RequestBody List<StudenteDTO> dtos) {
+        return service.insertListStudenti(dtos);
     }
 
     @PutMapping("/update/{id}")
