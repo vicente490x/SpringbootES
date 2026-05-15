@@ -1,6 +1,7 @@
 package its.springboot.service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -22,68 +23,31 @@ public class StudenteService {
         this.classeRepo = classeRepo;
     }
 
-    // ============================
-    // ENTITY → DTO
-    // ============================
-    public StudenteDTO toDTO(StudenteEntity s) {
+    private StudenteDTO toDTO(StudenteEntity s) {
         StudenteDTO dto = new StudenteDTO();
-
         dto.setId(s.getId());
         dto.setNome(s.getNome());
         dto.setCognome(s.getCognome());
         dto.setEta(s.getEta());
-
-        if (s.getClasse() != null) {
-            dto.setClasseId(s.getClasse().getId());
-            dto.setClasseNome(s.getClasse().getSezione().getLabel());
-        }
-
+        dto.setClasseId(s.getClasse().getId());
+        dto.setClasseNome(s.getClasse().getSezione().getLabel());
         return dto;
     }
 
-    // ============================
-    // DTO → ENTITY
-    // ============================
-    public StudenteEntity toEntity(StudenteDTO dto) {
+    private StudenteEntity toEntity(StudenteDTO dto) {
+        ClasseEntity classe = classeRepo.findById(dto.getClasseId())
+                .orElseThrow(() -> new NoSuchElementException("Classe non trovata"));
 
-        StudenteEntity s = new StudenteEntity();
-        s.setId(dto.getId());
-        s.setNome(dto.getNome());
-        s.setCognome(dto.getCognome());
-        s.setEta(dto.getEta());
-
-        if (dto.getClasseId() != null) {
-            ClasseEntity classe = classeRepo.findById(dto.getClasseId())
-                    .orElseThrow(() -> new RuntimeException("Classe non trovata"));
-            s.setClasse(classe);
-        }
-
-        return s;
+        return new StudenteEntity(
+                dto.getNome(),
+                dto.getCognome(),
+                dto.getEta(),
+                classe
+        );
     }
 
-    // ============================
-    // CRUD
-    // ============================
-    
-    public List<StudenteDTO> getStudentiByClasse(Long classeId) {
-
-        ClasseEntity classe = classeRepo.findById(classeId)
-                .orElseThrow(() -> new RuntimeException("Classe non trovata"));
-
-        return studenteRepo.findByClasse_Id(classeId)
-                .stream()
-                .map(s -> {
-                    StudenteDTO dto = toDTO(s);
-                    dto.setClasseNome(classe.getSezione().getLabel()); // 🔥 aggiunto
-                    return dto;
-                })
-                .collect(Collectors.toList());
-    }
-
-    
     public List<StudenteDTO> getStudenti() {
-        return studenteRepo.findAll()
-                .stream()
+        return studenteRepo.findAll().stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
@@ -91,81 +55,67 @@ public class StudenteService {
     public StudenteDTO getStudente(Long id) {
         return studenteRepo.findById(id)
                 .map(this::toDTO)
-                .orElse(null);
+                .orElseThrow(() -> new NoSuchElementException("Studente non trovato"));
     }
 
-    // ============================
-    // INSERT STUDENTE
-    // ============================
+    public List<StudenteDTO> getStudentiByClasse(Long classeId) {
+        ClasseEntity classe = classeRepo.findById(classeId)
+                .orElseThrow(() -> new NoSuchElementException("Classe non trovata"));
+
+        return studenteRepo.findByClasse_Id(classeId).stream()
+                .map(s -> {
+                    StudenteDTO dto = toDTO(s);
+                    dto.setClasseNome(classe.getSezione().getLabel());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+  
     public StudenteDTO insertStudente(StudenteDTO dto) {
 
         ClasseEntity classe = classeRepo.findById(dto.getClasseId())
-                .orElseThrow(() -> new RuntimeException("Classe non trovata"));
+                .orElseThrow(() -> new NoSuchElementException("Classe non trovata"));
 
-        // incrementa numero studenti
         classe.setNumeroStudenti(classe.getNumeroStudenti() + 1);
         classeRepo.save(classe);
 
-        StudenteEntity entity = toEntity(dto);
-        StudenteEntity saved = studenteRepo.save(entity);
-
+        StudenteEntity saved = studenteRepo.save(toEntity(dto));
         return toDTO(saved);
     }
 
-    // ============================
-    // INSERT LISTA STUDENTI
-    // ============================
     public List<StudenteDTO> insertListStudenti(List<StudenteDTO> dtos) {
+		return dtos.stream()
+				.map(this::insertStudente)
+				.collect(Collectors.toList());
+	}
+    public StudenteDTO updateStudente(StudenteDTO dto) {
 
-        for (StudenteDTO dto : dtos) {
-            ClasseEntity classe = classeRepo.findById(dto.getClasseId())
-                    .orElseThrow(() -> new RuntimeException("Classe non trovata"));
+        StudenteEntity s = studenteRepo.findById(dto.getId())
+                .orElseThrow(() -> new NoSuchElementException("Studente non trovato"));
 
-            classe.setNumeroStudenti(classe.getNumeroStudenti() + 1);
-            classeRepo.save(classe);
+        ClasseEntity vecchia = s.getClasse();
+        ClasseEntity nuova = classeRepo.findById(dto.getClasseId())
+                .orElseThrow(() -> new NoSuchElementException("Classe non trovata"));
+
+        
+        if (!vecchia.getId().equals(nuova.getId())) {
+            vecchia.setNumeroStudenti(vecchia.getNumeroStudenti() - 1);
+            nuova.setNumeroStudenti(nuova.getNumeroStudenti() + 1);
+            classeRepo.save(vecchia);
+            classeRepo.save(nuova);
         }
 
-        List<StudenteEntity> entities = dtos.stream()
-                .map(this::toEntity)
-                .collect(Collectors.toList());
-
-        return studenteRepo.saveAll(entities)
-                .stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
-    }
-
-    // ============================
-    // UPDATE STUDENTE
-    // ============================
-    public StudenteDTO updateStudente(Long id, StudenteDTO dto) {
-
-        StudenteEntity s = studenteRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Studente non trovato"));
-
-        ClasseEntity vecchiaClasse = s.getClasse();
-        ClasseEntity nuovaClasse = classeRepo.findById(dto.getClasseId())
-                .orElseThrow(() -> new RuntimeException("Classe non trovata"));
-
-        // se cambia classe → aggiorna conteggi
-        if (!vecchiaClasse.getId().equals(nuovaClasse.getId())) {
-            vecchiaClasse.setNumeroStudenti(vecchiaClasse.getNumeroStudenti() - 1);
-            nuovaClasse.setNumeroStudenti(nuovaClasse.getNumeroStudenti() + 1);
-            classeRepo.save(vecchiaClasse);
-            classeRepo.save(nuovaClasse);
-        }
-
+       
         s.setNome(dto.getNome());
         s.setCognome(dto.getCognome());
         s.setEta(dto.getEta());
-        s.setClasse(nuovaClasse);
+        s.setClasse(nuova);
 
         return toDTO(studenteRepo.save(s));
     }
 
- // ============================
- // DELETE STUDENTE
- // ============================
+    
     public boolean deleteStudente(Long id) {
 
         StudenteEntity s = studenteRepo.findById(id)
@@ -180,7 +130,4 @@ public class StudenteService {
         studenteRepo.deleteById(id);
         return true;
     }
-
-
-
 }

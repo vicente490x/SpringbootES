@@ -1,6 +1,7 @@
 package its.springboot.service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -21,50 +22,33 @@ public class ClasseService {
         this.repo = repo;
     }
 
-    // 🔥 POPOLA AUTOMATICAMENTE LE CLASSI ALL’AVVIO
     @PostConstruct
     public void initClassi() {
         if (repo.count() == 0) {
             for (ClasseTipo tipo : ClasseTipo.values()) {
-                ClasseEntity c = new ClasseEntity(tipo, 0);
-                repo.save(c);
+                repo.save(new ClasseEntity(tipo, 0));
             }
-            System.out.println("✔ Classi inizializzate nel database");
         }
     }
 
     private ClasseDTO toDTO(ClasseEntity c) {
         ClasseDTO dto = new ClasseDTO();
         dto.setId(c.getId());
-        dto.setSezione(c.getSezione().getLabel()); // ENUM → "3B"
+        dto.setSezione(c.getSezione().getLabel());
         dto.setNumeroStudenti(c.getNumeroStudenti());
         return dto;
     }
 
-    private ClasseEntity toEntity(ClasseDTO dto) {
-        ClasseEntity c = new ClasseEntity();
-
-        ClasseTipo tipo = fromLabel(dto.getSezione());
-        c.setSezione(tipo);
-
-        c.setNumeroStudenti(dto.getNumeroStudenti());
-        c.setId(dto.getId());
-
-        return c;
-    }
-
     private ClasseTipo fromLabel(String label) {
-        for (ClasseTipo tipo : ClasseTipo.values()) {
-            if (tipo.getLabel().equalsIgnoreCase(label)) {
-                return tipo;
-            }
-        }
-        throw new RuntimeException("ClasseTipo non valido: " + label);
+    			String normalized = label.trim().toUpperCase();
+        return List.of(ClasseTipo.values()).stream()
+                .filter(t -> t.getLabel().equalsIgnoreCase(normalized))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("ClasseTipo non valido: " + label));
     }
 
     public List<ClasseDTO> getClassi() {
-        return repo.findAll()
-                .stream()
+        return repo.findAll().stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
@@ -76,13 +60,13 @@ public class ClasseService {
     }
 
     public ClasseDTO insertClasse(ClasseDTO dto) {
-        ClasseEntity saved = repo.save(toEntity(dto));
-        return toDTO(saved);
+        ClasseEntity c = new ClasseEntity(fromLabel(dto.getSezione()), dto.getNumeroStudenti());
+        return toDTO(repo.save(c));
     }
 
-    public ClasseDTO updateClasse(Long id, ClasseDTO dto) {
-        ClasseEntity c = repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Classe non trovata"));
+    public ClasseDTO updateClasse(ClasseDTO dto) {
+        ClasseEntity c = repo.findById(dto.getId())
+                .orElseThrow(() -> new NoSuchElementException("Classe non trovata"));
 
         c.setSezione(fromLabel(dto.getSezione()));
         c.setNumeroStudenti(dto.getNumeroStudenti());
@@ -91,18 +75,13 @@ public class ClasseService {
     }
 
     public boolean deleteClasse(Long id) {
+        ClasseEntity c = repo.findById(id).orElse(null);
+        if (c == null) return false;
 
-        ClasseEntity classe = repo.findById(id)
-                .orElse(null);
-
-        if (classe == null) return false;
-
-        if (classe.getNumeroStudenti() > 0) {
+        if (c.getNumeroStudenti() > 0)
             throw new RuntimeException("Impossibile eliminare la classe: contiene studenti");
-        }
 
         repo.deleteById(id);
         return true;
     }
-
 }

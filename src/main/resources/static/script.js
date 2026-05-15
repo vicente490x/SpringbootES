@@ -58,9 +58,19 @@ function loadClassi() {
    AGGIUNTA CLASSE
 ============================ */
 function addClasse() {
+    const sezione = document.getElementById("sezione").value.trim();
+    const numero = parseInt(document.getElementById("numeroStudenti").value);
+
+    // ❌ Se la sezione è vuota → NON inviare la richiesta
+    if (!sezione) {
+        alert("Inserisci una sezione valida!");
+        return;
+    }
+
+    // 🔥 Se numero studenti è vuoto → metti 0
     const dto = {
-        sezione: document.getElementById("sezione").value,
-        numeroStudenti: parseInt(document.getElementById("numeroStudenti").value)
+        sezione: sezione,
+        numeroStudenti: isNaN(numero) ? 0 : numero
     };
 
     fetch("/classe/insert", {
@@ -74,6 +84,7 @@ function addClasse() {
     });
 }
 
+
 /* ============================
    ELIMINA CLASSE (con blocco)
 ============================ */
@@ -84,7 +95,6 @@ function deleteClasse(id) {
         .then(res => res.text())
         .then(msg => {
 
-            // 🔥 BLOCCO ELIMINAZIONE SE CI SONO STUDENTI
             if (msg.includes("Impossibile eliminare")) {
                 alert(msg);
                 return;
@@ -164,7 +174,7 @@ function addStudente() {
         document.getElementById("eta").value = "";
 
         loadStudenti();
-        loadClassi(); // 🔥 aggiorna numeroStudenti
+        loadClassi();
     });
 }
 
@@ -177,7 +187,7 @@ function deleteStudente(id) {
     fetch(`/studente/delete/${id}`, { method: "DELETE" })
         .then(() => {
             loadStudenti();
-            loadClassi(); // 🔥 aggiorna numeroStudenti
+            loadClassi();
         });
 }
 
@@ -207,20 +217,22 @@ function salvaStudenteEdit() {
     }
 
     const dto = {
+        id: id,
         nome: document.getElementById("editNome").value,
         cognome: document.getElementById("editCognome").value,
         eta: parseInt(document.getElementById("editEta").value),
         classeId: classeId
     };
 
-    fetch(`/studente/update/${id}`, {
+    fetch(`/studente/update`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(dto)
     }).then(() => {
+        document.activeElement.blur(); // evita warning aria-hidden
         editStudenteModal.hide();
         loadStudenti();
-        loadClassi(); // 🔥 aggiorna numeroStudenti
+        loadClassi();
     });
 }
 

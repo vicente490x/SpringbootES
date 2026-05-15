@@ -39,13 +39,13 @@ public class StudenteController {
     }
 
     @PostMapping("/insertMultiple")
-    public List<StudenteDTO> insertMultiple(@RequestBody List<StudenteDTO> dtos) {
+    public List<StudenteDTO> insertListStudenti(@RequestBody List<StudenteDTO> dtos) {
         return service.insertListStudenti(dtos);
     }
 
-    @PutMapping("/update/{id}")
-    public StudenteDTO updateStudente(@PathVariable Long id, @RequestBody StudenteDTO dto) {
-        return service.updateStudente(id, dto);
+    @PutMapping("/update")
+    public StudenteDTO updateStudente(@RequestBody StudenteDTO dto) {
+        return service.updateStudente(dto);
     }
 
    
@@ -56,7 +56,7 @@ public String deleteStudente(@PathVariable Long id) {
                 ? "Classe eliminata"
                 : "Classe non trovata";
     } catch (RuntimeException e) {
-        return e.getMessage(); // 🔥 manda il messaggio al frontend
+        return e.getMessage(); 
     }
 }
 
